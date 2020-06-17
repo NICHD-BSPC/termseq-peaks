@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+from peaklib.peaklib import idr_peak_calls
+
+if __name__ == "__main__":
+
+    usage = __doc__
+
+    import argparse
+
+    ap = argparse.ArgumentParser(usage=usage)
+    ap.add_argument(
+        "bedgraphs", nargs="+", help="""List of bedGraphs to call peaks on"""
+    )
+    ap.add_argument("peaks", help="""Filename to save final peaks to.""")
+    ap.add_argument(
+        "--idr-threshold",
+        "-t",
+        type=float,
+        default=0.05,
+        help="""IDR threshold to use for final peaks. Default is
+                    %(default)s.""",
+    )
+    ap.add_argument(
+        "--strand",
+        "-s",
+        default=".",
+        help="""It is assumed all provided bedGraphs are on the
+                    same strand; use this to specify which strand that is.
+                    Default is %(default)s.""",
+    )
+    ap.add_argument(
+        "--oracle-output",
+        help="""Filename to save oracle peaks (as called from
+                    merged bedGraphs). Default is to append the suffix
+                    ".oracle.narrowPeak" to the peaks output.""",
+    )
+    args = ap.parse_args()
+
+    if args.oracle_output is None:
+        args.oracle_output = args.peaks + ".oracle.narrowPeak"
+
+    idr_peak_calls(
+        bedgraphs=args.bedgraphs,
+        thresh=args.idr_threshold,
+        strand=args.strand,
+        oracle_fn=args.oracle_output,
+        final_fn=args.peaks,
+    )

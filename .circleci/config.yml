@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: continuumio/miniconda3
+
+    steps:
+      - checkout
+      - run:
+          name: install requirements
+          command: conda install -y pytest --file requirements.txt --channel conda-forge --channel bioconda
+      - run:
+          name: build tarball package and pip install it
+          command: |
+            python setup.py sdist && \
+            pip install dist/*tar.gz
+      - run:
+          name: run installed script
+          command: termseq_peaks -h

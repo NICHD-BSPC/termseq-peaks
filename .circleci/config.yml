@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   test:
     docker:
@@ -17,3 +18,8 @@ jobs:
       - run:
           name: run installed script
           command: termseq_peaks -h
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build

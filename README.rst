@@ -17,10 +17,6 @@ With pip::
 
    pip install termseq-peaks
 
-With conda::
-
-   conda install termseq-peaks --channel conda-forge --channel bioconda
-
 From source::
 
    git clone <repo>

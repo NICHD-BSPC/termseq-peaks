@@ -90,6 +90,9 @@ IDR threshold of 0.05. The full oracle file (the leniently-called peaks on
 a bedgraph that merges all provided bedgraphs) will be output as
 ``peaks_minus.bed.oracle.narrowPeak``.
 
+These files can be used with IGV or other genome browsers to inspect the peaks
+alongside the input signals to assess the peak-calling performance.
+
 For more help, run::
 
    termseq-peaks -h

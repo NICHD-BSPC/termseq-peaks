@@ -1,25 +1,31 @@
 Term-seq peak-caller
 ====================
 
+**Homepage: https://github.com/nichd-bspc/termseq-peaks**
+
 This tool was designed to call 3'-end peaks from term-seq data in bacteria,
 handling replicates in a statistically robust manner.
 
 Installation
 ------------
 
-pip::
+With pip::
 
    pip install termseq-peaks
 
-conda::
+With conda::
 
    conda install termseq-peaks --channel conda-forge --channel bioconda
 
-source::
+From source::
 
    git clone <repo>
    cd <repo>
    python setup.py install
+
+Usage::
+
+    termseq_peaks <bedgraphs> --peaks out.bed [additional options]
 
 Background
 ----------
@@ -48,13 +54,18 @@ method only takes two replicates at a time.
 Usage
 -----
 
+Prepare input
++++++++++++++
 Required input is normalized signal bedGraphs for each replicate. If data are
 stranded, there should be separate files for each strand. Gzipped bedGraphs are
 supported automatically if the filename ends in ``.gz``.
 
 One way of doing this might be with deepTools bamCoverage. This example makes
-a bedGraph file out of unique reads on the minus strand and normalizes the
-values using the RPKM method:
+a bedGraph file out of unique reads on the minus strand (``--samFlagInclude
+16``), uses 1-bp resolution (``--binSize 1``), only considers unique reads
+(``--minMappingQuality 20``), and uses only the first base of each read to
+build the signal (``--Offset 1``, as appropriate for a Term-seq library, for
+example).
 
 ::
 
@@ -63,11 +74,14 @@ values using the RPKM method:
      -o rep1_minus.bedgraph \
      --outFileFormat bedgraph \
      --binSize 1 \
+     --Offset 1 \
      --minMappingQuality 20 \
      --samFlagInclude 16 \
-     --normalizeUsing RPKM
 
-These bedGraphs can then be provided to termseq-peaks::
+Run
++++
+If we do this for each replicate's minus-strand reads, these bedGraphs can then
+be provided to termseq-peaks::
 
    termseq-peaks rep1_minus.bedgraph rep2_minus.bedgraph peaks_minus --strand -
 
@@ -93,10 +107,6 @@ IDR [1] cutoff.
   parameters to intentionally include both real peaks and noise. These peaks
   are called on each replicate.
 
-
-- All bedGraphs are additionally merged together and peaks are similarly called
-  on that merged signal to get the "oracle" peaks.
-
 - The score for the peaks is the "prominence" value for each peak; see [2] for
   details.
 
@@ -106,6 +116,9 @@ IDR [1] cutoff.
   files. The number of peaks falling below the IDR threshold is counted for
   each pairwise comparison. The minimum such number, N, across all pairwise
   combinations of replicates is used as the final number of peaks to select.
+
+- All bedGraphs are additionally merged together and peaks are similarly called
+  on that merged signal to get the "oracle" peaks.
 
 - The oracle peaks are then ranked by their score and the top N peaks are
   selected as the final peaks. The scores in the final peaks are the scores

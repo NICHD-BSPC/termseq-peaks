@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+"""
+Call peaks that are both strong and consistent across multiple bedGraph files
+in a way that works with very sharp peaks such as those from Term-seq.
+
+See https://github.com/nichd-bspc/termseq-peaks for more details.
+"""
+
+
 from peaklib.peaklib import idr_peak_calls
 
 if __name__ == "__main__":
@@ -10,30 +18,42 @@ if __name__ == "__main__":
 
     ap = argparse.ArgumentParser(usage=usage)
     ap.add_argument(
-        "bedgraphs", nargs="+", help="""List of bedGraphs to call peaks on"""
+        "bedgraphs",
+        nargs="+",
+        help="""bedGraphs to call peaks on. Multiple
+        (space-separated) files can be specified. This algorithm works
+        independently of normalization, so raw or normalized files are
+        fine. See https://github.com/nichd-bscp/termseq-peaks for details on
+        creating this bedGraph file.""",
     )
-    ap.add_argument("peaks", help="""Filename to save final peaks to.""")
+
+    ap.add_argument(
+        "--peaks",
+        required=True,
+        help="""Filename for narrowPeak file containing final peaks.""",
+    )
+
     ap.add_argument(
         "--idr-threshold",
         "-t",
         type=float,
         default=0.05,
         help="""IDR threshold to use for final peaks. Default is
-                    %(default)s.""",
+        %(default)s.""",
     )
     ap.add_argument(
         "--strand",
         "-s",
         default=".",
-        help="""It is assumed all provided bedGraphs are on the
-                    same strand; use this to specify which strand that is.
-                    Default is %(default)s.""",
+        help="""It is assumed all provided bedGraphs are on the same strand;
+        use this to specify which strand that is. This strand will be put in
+        the output narrowPeak file's "strand" field.  %(default)s.""",
     )
     ap.add_argument(
         "--oracle-output",
-        help="""Filename to save oracle peaks (as called from
-                    merged bedGraphs). Default is to append the suffix
-                    ".oracle.narrowPeak" to the peaks output.""",
+        help="""Filename for narrowPeak file of oracle peaks (as called from
+        merged bedGraphs). Default is to append the suffix ".oracle.narrowPeak"
+        to the peaks output.""",
     )
     args = ap.parse_args()
 

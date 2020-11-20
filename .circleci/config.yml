@@ -16,8 +16,12 @@ jobs:
             python setup.py sdist && \
             pip install dist/*tar.gz
       - run:
-          name: run installed script
+          name: confirm script installed correctly
           command: termseq_peaks -h
+
+      - run:
+          name: run example data
+          command: (cd peaklib/test && bash test.sh)
 workflows:
   version: 2
   test:

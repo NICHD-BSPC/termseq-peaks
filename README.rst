@@ -1,6 +1,10 @@
 Term-seq peak-caller
 ====================
 
+
+.. image:: https://circleci.com/gh/NICHD-BSPC/termseq-peaks.svg?style=svg
+    :target: https://circleci.com/gh/NICHD-BSPC/termseq-peaks
+
 **Homepage: https://github.com/nichd-bspc/termseq-peaks**
 
 This tool was designed to call 3'-end peaks from term-seq data in bacteria,

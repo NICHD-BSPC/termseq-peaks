@@ -9,29 +9,6 @@ import csv
 import subprocess as sp
 
 
-sample = "sample-test"
-narrowPeak = "test/forward.unique.narrowPeak"
-bw = [
-    "test/sample1.subset.bam.forward.unique.bigwig",
-    "test/sample2.subset.bam.forward.unique.bigwig",
-]
-fasta = "test/ecoli_default.fasta"
-gtf = "test/ecoli-subset.gtf"
-trRNA = "test/trRNA.tsv"
-cluster_length = 100
-intergenic_min_size = 50
-param_antisense = 50
-param_down = 50
-param_upstart = 200
-param_downstart = 50
-param_upstop = 50
-param_fasta = 50
-param_downfasta = 10
-assigned = "data/all.sample-test.tsv"
-assigned2 = False
-kinefold_scores = False
-output = "data"
-
 
 
 
@@ -1103,14 +1080,3 @@ def table_output(assigned, assigned2, kinefold_scores, output='data'):
         index=False,
         quoting=csv.QUOTE_NONE,
     )
-
-
-assign(sample, narrowPeak, bw, fasta, gtf, trRNA, output,
-        cluster_length, param_antisense, param_down,
-        param_upstart, param_downstart, param_upstop,
-        param_fasta, param_downfasta
-)
-
-
-
-table_output(assigned, assigned2, kinefold_scores, output)

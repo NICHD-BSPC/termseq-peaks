@@ -6,6 +6,7 @@ import numpy as np
 import pybedtools
 from pybedtools import featurefuncs
 import csv
+import subprocess as sp
 
 
 sample = "sample-test"
@@ -83,12 +84,14 @@ class CuratePeaks:
  
         npzfn = os.path.join(output, sample + ".npz")
         rawfn = os.path.join(output, sample + ".raw.tsv")
-        os.system(
-            "multiBigwigSummary bins -bs 1"
-            + " -b " + " ".join(bw)
-            + " -o "+ npzfn
-            + " --outRawCounts " + rawfn
-        )
+
+        sp.run(
+            [
+                'multiBigwigSummary', 'bins', '-bs', '1', '-b'
+            ] + bw + [
+                '-o', npzfn, '--outRawCounts', rawfn
+            ],
+            check=True)
 
         raw = pd.read_csv(rawfn, sep="\t")
         # raw is a dataframe like:

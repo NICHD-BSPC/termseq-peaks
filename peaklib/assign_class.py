@@ -51,7 +51,7 @@ class CuratePeaks:
 
         # incoming narrowPeak intervals may be large; select the single-bp
         # highest point within each interval
-        self.onebp = self.precise_peak(sample, self.narrowpeak_df, bw, output)
+        self.onebp = self.precise_peak(sample, self.narrowpeak_df, bw)
 
         # there may be several 1-bp peaks in the above output that are within
         # `cluster_length`. Select only the highest within that range.

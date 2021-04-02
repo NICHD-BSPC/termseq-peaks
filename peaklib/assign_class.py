@@ -33,8 +33,6 @@ kinefold_scores = False
 output = "data"
 
 
-if not os.path.exists(output):
-    os.makedirs(output)
 
 
 class CuratePeaks:
@@ -60,8 +58,9 @@ class CuratePeaks:
             If multiple peaks are found within this distance of each other,
             then select the highest peak among them and only report that one.
 
-        output: str
-            Path to output directory
+        output : str
+            Path to output directory. Will be created if it does not already
+            exist.
 
         region : str
             Subset region to use for this object. Useful for spot-checking and
@@ -89,6 +88,8 @@ class CuratePeaks:
         If this object was provided a `region`, only that subsetted region will
         be used.
         """
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
 
         npzfn = os.path.join(self.output, sample + ".npz")
         rawfn = os.path.join(self.output, sample + ".raw.tsv")

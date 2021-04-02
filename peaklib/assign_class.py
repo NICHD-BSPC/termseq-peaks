@@ -177,7 +177,7 @@ class PrepGtfs:
             Path to annotation gtf file, assumes it contains the mRNAs, sRNAs, tRNAs and rRNAs
 
         intergenic_min_size: integer
-            Minimun intergenic region size under which the 2 same-strand adjacent ORFs 
+            Minimun intergenic region size under which the 2 same-strand adjacent ORFs
             will be considered too close to assign the peak to a promoter
 
         """
@@ -240,7 +240,7 @@ class ClassAssign:
             List of curated 1bp-peaks. Typically this is the output `curated` of class CuratePeaks
 
         gtfs: list of 2 dataframes
-            A dataframe of ORFs minus their 3'end coordinate, and a dataframe of the 3'end 
+            A dataframe of ORFs minus their 3'end coordinate, and a dataframe of the 3'end
             coordinates only. Typically, this is the output of class PrepGtfs
 
         fasta: str
@@ -248,7 +248,7 @@ class ClassAssign:
 
         param_antisense: int
             Threshold distance to ORF to assign to class antisense
- 
+
         param_down: int
             Threshold distance downstream of 3'end of ORF to assign to class
             Primary or Secondary
@@ -314,9 +314,9 @@ class ClassAssign:
         if not os.path.exists(fasta + '.fai'):
             os.system('samtools faidx ' + fasta)
         return fasta + '.fai'
- 
+
     intsct_cols = ['chrom', 'start', 'end', 'name', 'score', 'strand',
-                        'intsct_chrom', 'insct_source', 'intsct_feature', 
+                        'intsct_chrom', 'insct_source', 'intsct_feature',
                         'intsct_start', 'intsct_end', 'intsct_score',
                         'intsct_strand', 'intsct_na', 'intsct_name']
 
@@ -402,7 +402,7 @@ class ClassAssign:
                      output,
                      intsct_cols=intsct_cols):
         """
-        Determine primary and secondary peaks: 
+        Determine primary and secondary peaks:
         - Primary: within 3'end of any ORF (mRNA, tRNA, rRNA, sRNA) included
         and param_down-bp downstream on the same strand AND has the highest readcount of all such peaks
         associated within the same region.
@@ -451,7 +451,7 @@ class ClassAssign:
         )
         # chrom    start   end   strand   name           ...  instc_name       origin  primary
         # chr      227     230   +        chr_227_230_+  ...  gene_id "ID5";   mRNA    gene_id "ID5";
-        # chr      227     230   +        chr_227_230_+  ...  gene_id "tRNA1"; NaN     
+        # chr      227     230   +        chr_227_230_+  ...  gene_id "tRNA1"; NaN
 
         # calculate distances between gene 3'end and termination peak
         peaksmrna["distance"] = np.where(

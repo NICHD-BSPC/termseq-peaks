@@ -69,6 +69,8 @@ class CuratePeaks:
         """
 
         self.region = region
+        self.output = output
+
         self.narrowpeak_df = pybedtools.BedTool(narrowPeak).to_dataframe()
 
         # incoming narrowPeak intervals may be large; select the single-bp
@@ -79,18 +81,20 @@ class CuratePeaks:
         # `cluster_length`. Select only the highest within that range.
         self.curated = self.max_in_cluster(self.onebp, cluster_length)
 
-    def precise_peak(self, sample, narrowpeak_df, bw, output):
+    def precise_peak(self, sample, narrowpeak_df, bw):
         """
         Return a 1bp-coordinate dataframe corresponding to the highest score
-        within narrowPeak intervals
+        within narrowPeak intervals.
+
         If this object was provided a `region`, only that subsetted region will
         be used.
         """
+
+        npzfn = os.path.join(self.output, sample + ".npz")
+        rawfn = os.path.join(self.output, sample + ".raw.tsv")
+
         # Use multiBigwigSummary to average the bigwigs, and select the highest
         # single-bp position within the interval to be reported
- 
-        npzfn = os.path.join(output, sample + ".npz")
-        rawfn = os.path.join(output, sample + ".raw.tsv")
 
         if self.region:
             region_arg = ['--region', self.region]

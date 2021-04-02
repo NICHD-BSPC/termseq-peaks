@@ -1,0 +1,11 @@
+chr	EcoCyc	exon	2277893	2278237	.	-	.	gene_id "EG12042"; gene_name "yejG";
+chr	EcoCyc	exon	2278570	2279760	.	-	.	gene_id "EG11419"; gene_name "bcr";
+chr	EcoCyc	exon	2279788	2280483	.	-	.	gene_id "EG12044"; gene_name "rsuA";
+chr	EcoCyc	exon	2280632	2282392	.	+	.	gene_id "EG12045"; gene_name "radD";
+chr	EcoCyc	exon	2282517	2282801	.	+	.	gene_id "EG10885"; gene_name "rplY";
+chr	EcoCyc	exon	2282940	2283947	.	-	.	gene_id "EG12048"; gene_name "yejK";
+chr	EcoCyc	exon	2284129	2284356	.	+	.	gene_id "EG12043"; gene_name "yejL";
+chr	EcoCyc	exon	2284376	2286136	.	+	.	gene_id "EG12049"; gene_name "yejM";
+chr	EcoCyc	exon	2286211	2286287	.	+	.	gene_id "EG30067"; gene_name "proL";
+chr	EcoCyc	exon	2286390	2288900	.	-	.	gene_id "EG12051"; gene_name "yejO";
+chr	.	exon	2278258	2278498	.	-	.	gene_id "G0-10700"; gene_name " ";

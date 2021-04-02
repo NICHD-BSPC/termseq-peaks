@@ -1,0 +1,110 @@
+alaW	RNA-Ala(GGC)
+alaX	tRNA-Ala(GGC)
+alaV	tRNA-Ala(UGC)
+alaT	tRNA-Ala(UGC)
+alaU	tRNA-Ala(UGC)
+argY	tRNA-Arg(ACG)
+argV	tRNA-Arg(ACG)
+argZ	tRNA-Arg(ACG)
+argQ	tRNA-Arg(ACG)
+argX	tRNA-Arg(CCG)
+argW	tRNA-Arg(CCU)
+argU	tRNA-Arg(UCU)
+asnU	tRNA-Asn(GUU)
+asnV	tRNA-Asn(GUU)
+asnW	tRNA-Asn(GUU)
+asnT	tRNA-Asn(GUU)
+aspU	tRNA-Asp(GUC)
+aspV	tRNA-Asp(GUC)
+aspT	tRNA-Asp(GUC)
+cysT	tRNA-Cys(GCA)
+glnX	tRNA-Gln(CUG)
+glnV	tRNA-Gln(CUG)
+glnW	tRNA-Gln(UUG)
+glnU	tRNA-Gln(UUG)
+gltU	tRNA-Glu(UUC)
+gltV	tRNA-Glu(UUC)
+gltW	tRNA-Glu(UUC)
+gltT	tRNA-Glu(UUC)
+glyU	tRNA-Gly(CCC)
+glyW	tRNA-Gly(GCC)
+glyX	tRNA-Gly(GCC)
+glyY	tRNA-Gly(GCC)
+glyV	tRNA-Gly(GCC)
+glyT	tRNA-Gly(UCC)
+hisR	tRNA-His(GUG)
+ileX	tRNA-Ile(CAU)
+ileY	tRNA-Ile(CAU)
+ileV	tRNA-Ile(GAU)
+ileU	tRNA-Ile(GAU)
+ileT	tRNA-Ile(GAU)
+metV	tRNA-initiator Met(CAU)
+metW	tRNA-initiator Met(CAU)
+metY	tRNA-initiator Met(CAU)
+metZ	tRNA-initiator Met(CAU)
+leuX	tRNA-Leu(CAA)
+leuP	tRNA-Leu(CAG)
+leuV	tRNA-Leu(CAG)
+leuQ	tRNA-Leu(CAG)
+leuT	tRNA-Leu(CAG)
+leuU	tRNA-Leu(GAG)
+leuZ	tRNA-Leu(UAA)
+leuW	tRNA-Leu(UAG)
+lysT	tRNA-Lys(UUU)
+lysY	tRNA-Lys(UUU)
+lysV	tRNA-Lys(UUU)
+lysZ	tRNA-Lys(UUU)
+lysW	tRNA-Lys(UUU)
+lysQ	tRNA-Lys(UUU)
+metT	tRNA-Met(CAU)
+metU	tRNA-Met(CAU)
+pheU	tRNA-Phe(GAA)
+pheV	tRNA-Phe(GAA)
+proK	tRNA-Pro(CGG)
+proL	tRNA-Pro(GGG)
+proM	tRNA-Pro(UGG)
+selC	tRNA-Sec(UCA)
+serU	tRNA-Ser(CGA)
+serV	tRNA-Ser(GCU)
+serW	tRNA-Ser(GGA)
+serX	tRNA-Ser(GGA)
+serT	tRNA-Ser(UGA)
+thrW	tRNA-Thr(CGU)
+thrV	tRNA-Thr(GGU)
+thrT	tRNA-Thr(GGU)
+thrU	tRNA-Thr(UGU)
+trpT	tRNA-Trp(CCA)
+tyrV	tRNA-Tyr(GUA)
+tyrU	tRNA-Tyr(GUA)
+tyrT	tRNA-Tyr(GUA)
+valW	tRNA-Val(GAC)
+valV	tRNA-Val(GAC)
+valT	tRNA-Val(UAC)
+valX	tRNA-Val(UAC)
+valU	tRNA-Val(UAC)
+valY	tRNA-Val(UAC)
+valZ	tRNA-Val(UAC)
+rrsH	16S ribosomal RNA
+rrsD	16S ribosomal RNA
+rrsA	16S ribosomal RNA
+rrsE	16S ribosomal RNA
+rrsB	16S ribosomal RNA
+rrsG	16S ribosomal RNA
+rrsC	16S ribosomal RNA
+rrlH	23S ribosomal RNA
+rrlG	23S ribosomal RNA
+rrlE	23S ribosomal RNA
+rrlD	23S ribosomal RNA
+rrlC	23S ribosomal RNA
+rrlB	23S ribosomal RNA
+rrlA	23S ribosomal RNA
+rrfB	5S ribosomal RNA
+rrfF	5S ribosomal RNA
+rrfC	5S ribosomal RNA
+rrfG	5S ribosomal RNA
+rrfD	5S ribosomal RNA
+rrfA	5S ribosomal RNA
+rrfH	5S ribosomal RNA
+rrfE	5S ribosomal RNA
+ssrS	6S RNA
+

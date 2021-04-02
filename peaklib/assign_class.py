@@ -38,7 +38,7 @@ if not os.path.exists(output):
 
 
 class CuratePeaks:
-    def __init__(self, sample, narrowPeak, bw, cluster_length, output):
+    def __init__(self, sample, narrowPeak, bw, cluster_length, output, region=None):
         """
         Return a 1bp-coordinate narrowPeak file corresponding to the highest score coordinate
         within cluster distance
@@ -62,8 +62,13 @@ class CuratePeaks:
 
         output: str
             Path to output directory
+
+        region : str
+            Subset region to use for this object. Useful for spot-checking and
+            testing.
         """
 
+        self.region = region
         self.narrowpeak_df = pybedtools.BedTool(narrowPeak).to_dataframe()
 
         # incoming narrowPeak intervals may be large; select the single-bp
@@ -78,6 +83,8 @@ class CuratePeaks:
         """
         Return a 1bp-coordinate dataframe corresponding to the highest score
         within narrowPeak intervals
+        If this object was provided a `region`, only that subsetted region will
+        be used.
         """
         # Use multiBigwigSummary to average the bigwigs, and select the highest
         # single-bp position within the interval to be reported
@@ -85,10 +92,14 @@ class CuratePeaks:
         npzfn = os.path.join(output, sample + ".npz")
         rawfn = os.path.join(output, sample + ".raw.tsv")
 
+        if self.region:
+            region_arg = ['--region', self.region]
+        else:
+            region_arg = []
         sp.run(
             [
                 'multiBigwigSummary', 'bins', '-bs', '1', '-b'
-            ] + bw + [
+            ] + bw + region_arg + [
                 '-o', npzfn, '--outRawCounts', rawfn
             ],
             check=True)

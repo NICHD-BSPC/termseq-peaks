@@ -7,7 +7,8 @@ import pybedtools
 from pybedtools import featurefuncs
 import csv
 import subprocess as sp
-
+import gzip
+import pysam
 
 
 
@@ -147,7 +148,7 @@ class CuratePeaks:
 
 
 class PrepGtfs:
-    def __init__(self, gtf, intergenic_min_size):
+    def __init__(self, gtf):
         """
         Splits the annotation file in 2 dataframes of ORFs minus their 3'end coordinate,
         and another of the 3'end coordinates only.
@@ -196,7 +197,9 @@ class ClassAssign:
         param_upstop,
         param_fasta,
         param_downfasta,
-        output
+        output,
+        sample,
+        offset=None
     ):
         """
         Assign peaks to particular classes:
@@ -257,22 +260,37 @@ class ClassAssign:
 
         output: str
             Path to output directory
+
+        sample: str
+            Name of sample
         """
         self.peakdf = peakdf
-        self.bedpeaks = pybedtools.BedTool.from_dataframe(
+        self.fai = self.index_func(fasta)
+        self.prepeaks = pybedtools.BedTool.from_dataframe(
             peakdf[["chrom", "start", "end", "name", "score", "strand"]]
         )
-        self.bedmRNA = pybedtools.BedTool.from_dataframe(gtfs.orf)
-        self.bedmRNA3 = pybedtools.BedTool.from_dataframe(gtfs.orf3end)
-        self.fai = self.index_func(fasta)
+        self.prebedmRNA = pybedtools.BedTool.from_dataframe(gtfs.orf)
+        self.prebedmRNA3 = pybedtools.BedTool.from_dataframe(gtfs.orf3end)
+
+        # if the offset is set, shift all coordinates
+        self.offset = offset
+        self.bedpeaks = self.prepeaks.shift(g=self.fai[0], s=-self.offset) if \
+            self.offset else self.prepeaks
+        self.bedmRNA = self.prebedmRNA.shift(g=self.fai[0], s=-self.offset) if \
+            self.offset else self.prebedmRNA
+        self.bedmRNA3 = self.prebedmRNA3.shift(g=self.fai[0], s=-self.offset) if \
+            self.offset else self.prebedmRNA3
+        self.gtfsfull = gtfs.full.shift(g=self.fai[0], s=-self.offset) if \
+            self.offset else gtfs.full
+
         self.antisense = self.antisense_func(
-            self.peakdf, self.bedpeaks, self.bedmRNA, param_antisense, self.fai
+            self.peakdf, self.bedpeaks, self.bedmRNA, param_antisense, self.fai[0]
         )
         self.internal = self.internal_func(
-            self.peakdf, self.bedpeaks, gtfs.full, self.fai
+            self.peakdf, self.bedpeaks, self.gtfsfull, self.fai[0]
         )
         self.primary = self.primary_func(
-            self.peakdf, self.bedpeaks, self.bedmRNA3, param_down, trRNA, self.fai, output
+            self.peakdf, self.bedpeaks, self.bedmRNA3, param_down, trRNA, self.fai, output, sample
         )
         self.details_class = self.details_class_func(
             self.primary, self.antisense, self.internal
@@ -288,14 +306,22 @@ class ClassAssign:
             param_upstop,
         )
         self.fasta = self.fasta_func(
-            self.peakdf, self.fai, fasta, param_fasta, param_downfasta
+            self.peakdf, self.fai, param_fasta, param_downfasta
         )
 
     def index_func(self, fasta):
         """ Return index file after creating it if did not exist"""
         if not os.path.exists(fasta + '.fai'):
-            os.system('samtools faidx ' + fasta)
-        return fasta + '.fai'
+            # checks if fasta is gzipped
+            with gzip.open(fasta, 'r') as fh:
+                try:
+                    fh.read(1)
+                    # if gzipped, unzip
+                    os.system('gunzip -c ' + fasta + ' > ' + fasta.replace('.gz', ''))
+                    fasta = fasta.replace('.gz', '')
+                finally:
+                    pysam.faidx(fasta)
+        return [fasta + '.fai', fasta]
 
     intsct_cols = ['chrom', 'start', 'end', 'name', 'score', 'strand',
                         'intsct_chrom', 'insct_source', 'intsct_feature',
@@ -382,6 +408,7 @@ class ClassAssign:
                      trRNA,
                      fai,
                      output,
+                     sample,
                      intsct_cols=intsct_cols):
         """
         Determine primary and secondary peaks:
@@ -391,7 +418,7 @@ class ClassAssign:
         - Secondary: identical to Primary but not the highest readcount.
         """
 
-        shifted = bedmRNA3.shift(g=fai, p=0,m=1)
+        shifted = bedmRNA3.shift(g=fai[0], p=0,m=1)
 
         peaksmrna = bedpeaks.intersect(
                 shifted.each(
@@ -578,7 +605,10 @@ class ClassAssign:
         mRNAonly = orf.copy()
         for i in pd.read_csv(trRNA, sep="\t", header=None)[0]:
             mRNAonly = mRNAonly[~mRNAonly["attributes"].str.contains(i)]
-        bedmRNAonly = pybedtools.BedTool.from_dataframe(mRNAonly)
+        premRNAonly = pybedtools.BedTool.from_dataframe(mRNAonly)
+        bedmRNAonly = premRNAonly.shift(g=self.fai[0], s=-self.offset) if \
+            self.offset else premRNAonly
+
         # label peaks within 10bp downstream of any ORF
         peakstmp = bedpeaks.intersect(
             [
@@ -758,7 +788,7 @@ class ClassAssign:
             ]
         ]
 
-    def fasta_func(self, peakdf, fai, fasta, param_fasta, param_downfasta):
+    def fasta_func(self, peakdf, fai, param_fasta, param_downfasta):
         # add fasta sequences
         dfplus = pybedtools.BedTool.from_dataframe(
             peakdf[peakdf["strand"] == "+"], header=None
@@ -766,8 +796,11 @@ class ClassAssign:
         dfminus = pybedtools.BedTool.from_dataframe(
             peakdf[peakdf["strand"] == "-"], header=None
         )
+        if self.offset:
+            dfplus = dfplus.shift(g=fai[0], s=-self.offset)
+            dfminus = dfminus.shift(g=fai[0], s=-self.offset)
         genome = {}
-        with open(fai) as f:
+        with open(fai[0]) as f:
             for line in f:
                 chrom = line.split()
                 genome[chrom[0]] = (0, int(chrom[1]))
@@ -790,7 +823,7 @@ class ClassAssign:
         # truncate to chromosome size in case an interval would go over
         df2 = df2.truncate_to_chrom(genome)
         # get sequence
-        df3 = df2.sequence(fi=fasta, s=True)
+        df3 = df2.sequence(fi=fai[1], s=True)
         fatmp = pd.read_csv(df3.seqfn, header=None).iloc[1::2, :]
         fatmp["idx"] = list(peakdf.index)
         fatmp = fatmp.set_index("idx")
@@ -814,6 +847,8 @@ def assign(
     param_upstop=50,
     param_fasta=50,
     param_downfasta=10,
+    region=None,
+    offset=None
 ):
     """
     Parameters
@@ -874,8 +909,8 @@ def assign(
         Length downstream of the 3'end of ORF for which the fasta sequence will be returned.
         Default is 10.
     """
-    peaks = CuratePeaks(sample, narrowPeak, bw, cluster_length, output)
-    gtfs = PrepGtfs(gtf, intergenic_min_size)
+    peaks = CuratePeaks(sample, narrowPeak, bw, cluster_length, output, region)
+    gtfs = PrepGtfs(gtf)
     peak = peaks.curated.set_index("name", drop=False)
 
     peakdf = peak.copy()
@@ -892,7 +927,9 @@ def assign(
         param_upstop=param_upstop,
         param_fasta=param_fasta,
         param_downfasta=param_downfasta,
-        output=output
+        output=output,
+        sample=sample,
+        offset=offset
     )
 
     # Concatenate all the AssignClass properties into one full dataframe
@@ -987,7 +1024,7 @@ def assign(
     )
 
 
-def table_output(assigned, assigned2, kinefold_scores, output='data'):
+def table_output(sample, assigned, assigned2, kinefold_scores, output='data'):
     """
     Parameters
     ----------

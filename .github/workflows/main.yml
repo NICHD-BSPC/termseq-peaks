@@ -1,0 +1,28 @@
+name: tests
+on: push
+jobs:
+  test:
+    name: testing
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+    - uses: actions/checkout@v1
+    - name: build env
+      run: |
+        eval "$(condaa shell.bash hook)"
+        conda create -p ./env \
+          --file requirements.txt \
+          --file optional-requirements.txt \
+          --file test-requirements.txt \
+          --channel conda-forge \
+          --channel bioconda \
+          --strict-channel-priority
+
+        conda activate ./env
+        python setup.py sdist && pip install dist/*.tar.gz
+    - name: confirm script installed correctly
+      run: termseq_peaks -h
+
+    - name: run example date
+      run: (cd peaklib/test && bash test.sh)

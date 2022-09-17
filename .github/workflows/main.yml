@@ -19,6 +19,7 @@ jobs:
           --channel bioconda \
           --strict-channel-priority
 
+        conda activate ./env
         python setup.py sdist && pip install dist/*.tar.gz
     - name: confirm script installed correctly
       run: |

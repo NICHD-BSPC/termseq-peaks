@@ -19,10 +19,13 @@ jobs:
           --channel bioconda \
           --strict-channel-priority
 
-        conda activate ./env
         python setup.py sdist && pip install dist/*.tar.gz
     - name: confirm script installed correctly
-      run: termseq_peaks -h
+      run: |
+        eval "$(conda shell.bash hook)" && conda activate ./env
+        termseq_peaks -h
 
     - name: run example date
-      run: (cd peaklib/test && bash test.sh)
+      run: |
+        eval "$(conda shell.bash hook)" && conda activate ./env
+        (cd peaklib/test && bash test.sh)

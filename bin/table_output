@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+"""
+Outputs a table from provided assigned peaks.
+"""
+
+from peaklib.assign_class import table_output
+
+usage = __doc__
+
+import argparse
+
+ap = argparse.ArgumentParser(usage=usage)
+
+# required arguments
+ap.add_argument(
+    "--sample",
+    required=True,
+    help="""Label used to compose output files.""",
+)
+
+ap.add_argument(
+    "--assigned",
+    required=True,
+    help="""Path to file with curated peaks. Typically this is the output of
+    the class_annot tool. Can be for a single strand or both.""",
+)
+
+# arguments with default values
+ap.add_argument(
+    "--assigned2",
+    default=None,
+    help="""Optional. Path to file with curated peaks of opposite strand if
+    parameter assigned was for a single strand. Typically this is the output of
+    the assign function. Default is None.""",
+)
+
+ap.add_argument(
+    "--output",
+    default='data',
+    help="""Path to output directory. Default is `data`.""",
+)
+
+ap.add_argument(
+    "--kinefold_scores",
+    default=None,
+    help="""Optional. Path to Kinefold output file corresponding to the curated
+    peaks. Default is None.""",
+)
+args = ap.parse_args()
+
+table_output(
+    sample=args.sample,
+    assigned=args.assigned,
+    assigned2=args.assigned2,
+    output=args.output,
+    kinefold_scores=args.kinefold_scores,
+)

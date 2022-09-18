@@ -1,0 +1,168 @@
+#!/usr/bin/env python
+
+"""
+Annotates termination peaks with the following classes:
+
+"Primary":
+    - within 3'end included of any ORF (mRNA, tRNA, rRNA, sRNA) and
+      a downstream window (--param_down) on the same strand
+    - must be on same strand as ORF
+    - AND has the highest readcount of all such peaks associated within the
+      region defined by --cluster_length
+
+"Secondary":
+    - Fulfills the Primary criteria with respect to location BUT is NOT the
+      peak with the highest readcount.
+
+"Antisense":
+    - located within upstream window, downstream or within an ORF on the
+      opposite strand.
+
+"Internal":
+    - within any ORF (mRNA, tRNA, rRNA, sRNA) on the same strand, excluding the
+      3'end coordinate
+
+"Orphan":
+    - not associated with any of the categories above
+
+
+Requires:
+
+- bigWig files representing 3' ends of reads
+- narrowPeak output file output from termseq-peaks
+- genome fasta
+- GTF annotation
+"""
+
+from peaklib.assign_class import assign
+
+
+usage = __doc__
+
+import argparse
+
+ap = argparse.ArgumentParser(usage=usage)
+
+# required arguments
+ap.add_argument(
+    "--sample",
+    required=True,
+    help="""Label used to name output files.""",
+)
+
+ap.add_argument(
+    "--narrowPeak",
+    required=True,
+    help="""Path to narrowPeak output file created by termseq-peaks.""",
+)
+
+ap.add_argument(
+    "--bw",
+    nargs="+",
+    required=True,
+    help="""List of paths to bigWig files representing the 3' ends of reads. See
+    docs for details; often this is from unique reads taking the first bp
+    of R1 using deeptools. These should be normalized already (see docs).""",
+)
+
+ap.add_argument(
+    "--fasta",
+    required=True,
+    help="""Path to reference genome fasta, used to extract sequence around peaks.""",
+)
+
+ap.add_argument(
+    "--gtf",
+    required=True,
+    help="""Path to gtf annotations.""",
+)
+
+ap.add_argument(
+    "--output",
+    default='data',
+    help="""Path to the output directory. Default is '%(default)s'""",
+)
+
+ap.add_argument(
+    "--trrna",
+    default=[],
+    help="""Path to file containing the names of tRNAs and rRNAs. Can be exact gene
+    names or regex. Default is not to use any.""",
+)
+
+ap.add_argument(
+    "--cluster_length",
+    default=100,
+    help="""If multiple peaks are found within this distance of each other,
+    then select the highest peak among them and only report that one. Default
+    is %(default)s.""",
+)
+
+ap.add_argument(
+    "--param_antisense",
+    default=50,
+    help="""Threshold distance to ORF to assign to class antisense. Default is
+    %(default)s.""",
+)
+
+ap.add_argument(
+    "--param_down",
+    default=50,
+    help="""Threshold distance downstream of 3'end of ORF to assign to class
+    Primary or Secondary. Default is %(default)s.""",
+)
+
+ap.add_argument(
+    "--param_upstart",
+    default=200,
+    help="""Threshold distance upstream of 5'end of an mRNA ORF to include when
+    returning the list of peaks in promoters. Default is %(default)s.""",
+)
+
+ap.add_argument(
+    "--param_downstart",
+    default=50,
+    help="""Threshold distance downstream of 5'end of an mRNA ORF to include when
+    returning the list of peaks in promoters. Default is %(default)s.""",
+)
+
+ap.add_argument(
+    "--param_upstop",
+    default=50,
+    help="""Threshold distance downstream of 5' end of an mRNA ORF to exclude when
+    return the list of peaks upstream of 3' of mRNA ORF. Default is %(default)s.""",
+)
+
+ap.add_argument(
+    "--param_fasta",
+    default=50,
+    help="""Length upstream of the 3'end of ORF for which the fasta sequence will be returned.
+    Default is %(default)s.""",
+)
+
+ap.add_argument(
+    "--param_downfasta",
+    default=10,
+    help="""Length downstream of the 3'end of ORF for which the fasta sequence will be returned.
+    Default is %(default)s.""",
+)
+args = ap.parse_args()
+
+
+assign(
+    sample=args.sample,
+    narrowPeak=args.narrowPeak,
+    bw=args.bw,
+    fasta=args.fasta,
+    gtf=args.gtf,
+    trRNA=args.trRNA,
+    output=args.output,
+    cluster_length=args.cluster_length,
+    param_antisense=args.param_antisense,
+    param_down=args.param_down,
+    param_upstart=args.param_upstart,
+    param_downstart=args.param_downstart,
+    param_upstop=args.param_upstop,
+    param_fasta=args.param_fasta,
+    param_downfasta=args.param_downfasta
+)

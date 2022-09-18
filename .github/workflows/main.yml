@@ -25,6 +25,8 @@ jobs:
       run: |
         eval "$(conda shell.bash hook)" && conda activate ./env
         termseq_peaks -h
+        class_annot -h
+        table_output -h
 
     - name: run example date
       run: |

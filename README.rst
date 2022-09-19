@@ -13,15 +13,37 @@ handling replicates in a statistically robust manner.
 Installation
 ------------
 
-With pip::
+Since ``termseq-peaks`` relies on packages that are not in PyPI, the
+recommended way to install is to use ``conda`` and the ``bioconda channel``.
 
-   pip install termseq-peaks
+First, ensure conda and bioconda are set up -- see the `bioconda docs
+<https://bioconda.github.io/>`_ for details. You may want to install mamba into
+your base environment to speed up environment creation in general, see `here
+<https://bioconda.github.io/faqs.html#how-do-i-speed-up-package-installation>_`
+for details.
 
-From source::
 
-   git clone <repo>
-   cd <repo>
-   python setup.py install
+Then, to use the development version:
+
+.. code-block:: bash
+
+    git clone https://github.com/NICHD-BSPC/termseq-peaks
+    cd termseq-peaks
+
+    # if using mamba
+    mamba create -n termseq-peaks --file requirements.txt
+
+    # if using conda
+    conda create -n termseq-peaks --file requirements.txt
+
+    # activate new env that has all dependencies
+    conda activate termseq-peaks
+
+    # install into this env
+    python setup.py install
+
+Once the conda package for termseq-peaks is in Bioconda, this README will be
+updated with instructions for installing everything via conda.
 
 Usage::
 

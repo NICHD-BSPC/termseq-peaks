@@ -1,0 +1,6 @@
+chrom	start	strand	classification	details	primary_origin	score	upstream_3end_seq	upstart200	dist_upstart200	within_10bp-downstream	upstop	dist_upstop
+chr	2286287	+	primary, 	P:gene_id "EG30067"; gene_name "proL";		2986635.0	ACCGTCATGGGGTGTCGGGGGTCGGAGGTTCAAATCCTCTCGTGCCGACCAAAAATCCCAA			gene_id "EG30067"; gene_name "proL";		
+chr	2278567	+	antisense, 	A:gene_id "EG11419"; gene_name "bcr";		1085.844	GGTTGACATGCATCAACAAAGGAAGCCTTTTAGCTTCCTCGTTGTGCAATAGATCACCGTT					
+chr	2284559	+	internal, 	I:gene_id "EG12049"; gene_name "yejM";		954.333	CAACGCTTGCTGGTCGCATTTATTCCTACGTAAGCATTATCGGCCATTTCAGCTTCCTGGT					
+chr	2282535	+	internal, 	I:gene_id "EG10885"; gene_name "rplY";		865.2705	CCTGTAGCAGGATTAATTTAAGAGAGAAAGAAATGTTTACTATCAACGCAGAAGTACGTAA	gene_id "EG10885"; gene_name "rplY";	19			
+chr	2282580	+	internal, 	I:gene_id "EG10885"; gene_name "rplY";		865.2705	ACGCAGAAGTACGTAAAGAGCAGGGTAAGGGTGCGAGCCGCCGCCTGCGTGCCGCTAACAA					

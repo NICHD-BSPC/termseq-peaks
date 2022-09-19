@@ -9,3 +9,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 MANIFEST
+*.gzi
+*.fai
+env/
+*.gz

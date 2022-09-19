@@ -50,13 +50,17 @@ One general solution to this is to apply the Irreproducible Discovery Rate
 method (IDR), originally developed for the ENCODE project. By design, the IDR
 method only takes two replicates at a time.
 
+Functions for post-processing are available.
+The functions ``assign`` and ``table_output`` are add-on functions to peaklib
+designed to filter and map the 3'-end peaks relative to annotated ORFs.
+
 
 Usage
 -----
 
 Prepare input
 +++++++++++++
-Required input is normalized signal bedGraphs for each replicate. If data are
+``termseq-peaks`` required input is normalized signal bedGraphs for each replicate. If data are
 stranded, there should be separate files for each strand. Gzipped bedGraphs are
 supported automatically if the filename ends in ``.gz``.
 
@@ -164,6 +168,101 @@ and substantial RAM may be required. This tool remains untested on larger
 genomes, but has worked quite well for term-seq in several bacterial genomes.
 Furthermore, since we need to perform IDR between all pairwise combinations of
 replicates, the running time scales as O(nreplicates^2).
+
+Post-processing
+---------------
+
+Usage
++++++
+
+**Prepare input**
+
+Required ``assign`` input are:
+
+- strand-specific narrowPeak file, where each interval represents the full size of
+  the detected peak. This can be the output of peaklib function.
+
+- strand-specific bigWigs corresponding to the narrowPeak files. These files might
+  be generated with bamCoverage. I.e. for negative strand bigwig:
+
+::
+
+    bamCoverage \
+        --bam rep1.bam \
+        -o rep1_minus.bw \
+        --binSize 1 \
+        --Offset 1 \
+        --minMappingQuality 20 \
+        --samFlagInclude 16 \
+        --normalizeUsing RPKM 
+
+For positive strand bigwig, swap ``--samFlagInclude 16``  for ``--samFlagExclude 16`` 
+
+- annotation gtf file. The function assumes it contains the mRNAs, sRNAs, tRNAs and rRNAs.
+
+- genome fasta file
+
+- file containing the list of tRNAs and rRNAs names in the 1st column of a tab-separated file. Names can be exact or regex.
+
+Required ``table_output`` input are:
+
+- strand-specific curated peaks assigned to ORFs in a tab-separated file. Typically this is
+  the output of the ``assign`` function.
+
+- optional: opposite strand-specific curated peaks assigned to ORFs in a tab-separated file. Typically
+  this is the output of the ``assign`` function.
+
+- optional: Kinefold output file corresponding to the one or both strand(s) curated peaks.
+
+
+**Run**
+
+The ``assign`` function can be run with:
+
+::
+
+    termseq-peaks assign \
+        --sample sample1_minus \
+        --narrowPeak sample1_minus.narrowPeak \
+        --bw sample1_minus-rep1.bw sample1_minus-rep2.bw \
+        --fasta genome.fa \
+        --gtf annotation.gtf \
+        --trRNA trRNAs.tsv
+
+The curated peaks assigned to an ORF can be found in the output file ``all.sample1_minus.tsv``
+
+The ``table_output`` function can be run with:
+
+::
+
+    termseq-peaks table_output \
+        --sample sample1 \
+        --assigned all.sample1_minus.tsv \
+        --assigned2 all.sample1_plus.tsv \
+        --kinefold_scores kinefold_output.tsv \
+
+The summary file is saved as ``sample1_TableS1.tsv``.
+
+Algorithm
++++++++++
+
+Function ``assign``:
+
+- Return a 1bp-coordinate narrowPeak file corresponding to the highest score coordinate within cluster distance
+- Assign peaks to particular classes:
+    - primary: within 3'end of any ORF (mRNA, tRNA, rRNA, sRNA) included and param_down-bp downstream on the same
+      strand AND has the highest readcount of all such peaks associated within the same region.
+    - secondary: fulfills the above criteria with respect to location BUT is NOT the peak with the highest readcount.
+    - antisense: located within param_antisense-bp upstream, downstream or in an ORF of the opposite strand.
+    - internal: within an any ORF (mRNA, tRNA, rRNA, sRNA) coordinates, excluding the 3'end coordinate on the same strand.
+    - orphan: not associated with any of the above categories. Peaks can have multiple classifications.
+- Also returns lists of peaks within param_upstart-bp upstream of start codon to param_downstart-bp downstream of start
+  codon, and within param_upstop-bp downstream of start codon to the stop codon.
+
+Function ``table_output``:
+
+- Concatenate results from the function ``assign`` and optionally adds the Kinefold scores if provided.
+
 
 References
 ----------

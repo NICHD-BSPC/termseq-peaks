@@ -1,6 +1,6 @@
 scipy
 pandas
-numpy
+numpy<=1.19.5
 pybedtools
-idr<=1.19.5
+idr
 deeptools

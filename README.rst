@@ -16,6 +16,10 @@ Installation
 Since ``termseq-peaks`` relies on packages that are not in PyPI, the
 recommended way to install is to use ``conda`` and the ``bioconda channel``.
 
+If ``conda`` is not an option for you, it is possible to install via ``pip``,
+but note that will result in the installation of an incompatible ``idr`` version.
+A workaround is to then uninstall and reinstall ``idr`` via ``pip``.
+
 First, ensure conda and bioconda are set up -- see the `bioconda docs
 <https://bioconda.github.io/>`_ for details. You may want to install mamba into
 your base environment to speed up environment creation in general, see `here

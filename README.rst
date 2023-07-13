@@ -18,7 +18,8 @@ recommended way to install is to use ``conda`` and the ``bioconda channel``.
 
 If a full ``conda`` installation is not an option for you, it is possible to install via ``pip``,
 but note that will result in the installation of an incompatible ``idr`` version.
-A workaround is to then uninstall ``idr`` via ``pip`` and reinstall it via ``conda`` (thanks to #5).
+A workaround is to then uninstall ``idr`` via ``pip`` and reinstall it via ``conda`` (thanks to
+@Gr1m3y [#5](https://github.com/NICHD-BSPC/termseq-peaks/issues/5)).
 
 First, ensure conda and bioconda are set up -- see the `bioconda docs
 <https://bioconda.github.io/>`_ for details. You may want to install mamba into

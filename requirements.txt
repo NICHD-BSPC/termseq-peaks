@@ -2,5 +2,5 @@ scipy
 pandas
 numpy
 pybedtools
-idr<=1.19
+idr<=1.19.5
 deeptools

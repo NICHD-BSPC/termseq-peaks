@@ -37,6 +37,7 @@ class PeakCaller(object):
         self.starts_by_chrom = {}
         self.chroms = []
 
+        self.df["chrom"] = self.df["chrom"].astype(str)
         for chrom in sorted(self.df["chrom"].unique()):
 
             idx = self.df["chrom"] == chrom

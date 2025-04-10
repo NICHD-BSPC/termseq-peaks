@@ -21,10 +21,10 @@ if __name__ == "__main__":
         "bedgraphs",
         nargs="+",
         help="""bedGraphs to call peaks on. Multiple
-        (space-separated) files can be specified. This algorithm works
-        independently of normalization, so raw or normalized files are
-        fine. See https://github.com/nichd-bscp/termseq-peaks for details on
-        creating this bedGraph file.""",
+        (space-separated) files can be specified. It is recommended that the files
+        all have the same units (e.g. as is the case after reads-per-million
+        normalization). See https://github.com/nichd-bscp/termseq-peaks for 
+        details on creating this bedGraph file.""",
     )
 
     ap.add_argument(
